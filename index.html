@@ -1,1 +1,1154 @@
-Hola Mundo
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dev Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #16161f;
+    --border: #1e1e2e;
+    --accent-app: #00e5ff;
+    --accent-game: #ff3d71;
+    --accent-gold: #ffd700;
+    --text: #e8e8f0;
+    --muted: #6b6b80;
+    --tag-bg: #1a1a28;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ---- NOISE OVERLAY ---- */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.4;
+  }
+
+  /* ---- CURSOR ---- */
+  .cursor {
+    position: fixed;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--accent-app);
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, background 0.3s;
+    mix-blend-mode: screen;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--accent-app);
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.15s ease, width 0.2s, height 0.2s, border-color 0.3s;
+    opacity: 0.5;
+  }
+
+  /* ---- GRID BACKGROUND ---- */
+  .grid-bg {
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ---- NAV ---- */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2rem 4rem;
+    background: rgba(10,10,15,0.7);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Space Mono', monospace;
+    font-size: 1rem;
+    color: var(--accent-app);
+    letter-spacing: 0.15em;
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--accent-game); }
+
+  .nav-links {
+    display: flex; gap: 2.5rem; list-style: none;
+  }
+  .nav-links a {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  /* ---- HERO ---- */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 0 4rem;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  .hero-bg-circle {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+  }
+  .hero-bg-circle.c1 {
+    width: 600px; height: 600px;
+    background: rgba(0,229,255,0.07);
+    top: -100px; right: -100px;
+    animation: float1 8s ease-in-out infinite;
+  }
+  .hero-bg-circle.c2 {
+    width: 400px; height: 400px;
+    background: rgba(255,61,113,0.06);
+    bottom: -50px; left: 200px;
+    animation: float2 10s ease-in-out infinite;
+  }
+
+  @keyframes float1 {
+    0%,100% { transform: translate(0,0) scale(1); }
+    50% { transform: translate(-30px, 30px) scale(1.05); }
+  }
+  @keyframes float2 {
+    0%,100% { transform: translate(0,0) scale(1); }
+    50% { transform: translate(20px, -20px) scale(1.08); }
+  }
+
+  .hero-content { max-width: 800px; position: relative; }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--accent-app);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+  .hero-tag::before {
+    content: '';
+    display: block;
+    width: 24px; height: 1px;
+    background: var(--accent-app);
+  }
+
+  .hero-name {
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.3rem;
+  }
+  .hero-name .line2 {
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(232,232,240,0.3);
+  }
+
+  .hero-role {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin: 1.5rem 0 2rem;
+  }
+  .hero-role .sep { color: var(--accent-game); margin: 0 0.5rem; }
+
+  .hero-desc {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: #9090a8;
+    max-width: 500px;
+    margin-bottom: 3rem;
+  }
+
+  .hero-ctas {
+    display: flex; gap: 1rem; flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.75rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+  }
+  .btn-primary {
+    background: var(--accent-app);
+    color: #000;
+  }
+  .btn-primary:hover { background: #33eaff; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,229,255,0.3); }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-outline:hover { border-color: var(--muted); transform: translateY(-2px); }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 3rem; right: 4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+    writing-mode: vertical-rl;
+  }
+  .hero-scroll::after {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to bottom, var(--muted), transparent);
+    animation: scrollline 2s ease-in-out infinite;
+  }
+  @keyframes scrollline {
+    0% { transform: scaleY(0); transform-origin: top; }
+    50% { transform: scaleY(1); transform-origin: top; }
+    51% { transform: scaleY(1); transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+
+  /* ---- STATS BAR ---- */
+  .stats-bar {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: stretch;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .stat-item {
+    flex: 1;
+    padding: 2rem;
+    text-align: center;
+    border-right: 1px solid var(--border);
+    position: relative;
+    transition: background 0.3s;
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-item:hover { background: var(--surface); }
+
+  .stat-num {
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    display: block;
+  }
+  .stat-num.blue { color: var(--accent-app); }
+  .stat-num.red  { color: var(--accent-game); }
+  .stat-num.gold { color: var(--accent-gold); }
+
+  .stat-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+    display: block;
+    margin-top: 0.3rem;
+  }
+
+  /* ---- SECTION SHARED ---- */
+  section {
+    position: relative;
+    z-index: 1;
+    padding: 7rem 4rem;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 4rem;
+  }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .section-title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    max-width: 200px;
+  }
+
+  /* ---- APP PROJECTS ---- */
+  #apps { background: var(--bg); }
+
+  .apps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.5px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .app-card {
+    background: var(--surface);
+    padding: 2.5rem;
+    transition: background 0.3s, transform 0.3s;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .app-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 0;
+    background: var(--accent-app);
+    transition: height 0.3s ease;
+  }
+  .app-card:hover::before { height: 100%; }
+  .app-card:hover { background: var(--surface2); }
+
+  .app-card-icon {
+    font-size: 2rem;
+    margin-bottom: 1.2rem;
+    display: block;
+  }
+
+  .app-card-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.6rem;
+    letter-spacing: -0.01em;
+  }
+
+  .app-card-desc {
+    font-size: 0.9rem;
+    color: #7070888;
+    line-height: 1.65;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .tag-row {
+    display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1.5rem;
+  }
+
+  .tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    padding: 0.3rem 0.7rem;
+    background: var(--tag-bg);
+    color: var(--muted);
+    border-radius: 2px;
+    text-transform: uppercase;
+  }
+  .tag.accent { color: var(--accent-app); border: 1px solid rgba(0,229,255,0.2); }
+
+  .card-links {
+    display: flex; gap: 1rem;
+  }
+  .card-link {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-decoration: none;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    transition: color 0.2s;
+  }
+  .card-link:hover { color: var(--accent-app); }
+  .card-link svg { width: 12px; height: 12px; }
+
+  .app-card-status {
+    position: absolute;
+    top: 1.5rem; right: 1.5rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.6rem;
+    border-radius: 99px;
+  }
+  .status-live { background: rgba(0,229,255,0.1); color: var(--accent-app); }
+  .status-wip  { background: rgba(255,215,0,0.1);  color: var(--accent-gold); }
+
+  /* ---- GAME PROJECTS ---- */
+  #games { background: var(--surface); }
+
+  .games-featured {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 1.5px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 1.5px;
+  }
+
+  .game-featured-card {
+    background: var(--bg);
+    padding: 3rem;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  .game-featured-card:hover { background: #0c0c14; }
+
+  .game-featured-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(to right, var(--accent-game), transparent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+  .game-featured-card:hover::after { transform: scaleX(1); }
+
+  .game-genre-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent-game);
+    margin-bottom: 1rem;
+  }
+  .game-genre-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent-game);
+    animation: blink 2s ease-in-out infinite;
+  }
+  @keyframes blink {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .game-card-title {
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.8rem;
+    line-height: 1.1;
+  }
+  .game-card-title .highlight { color: var(--accent-game); }
+
+  .game-card-desc {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 1.8rem;
+    max-width: 420px;
+  }
+
+  .game-meta {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .game-meta-item {
+    text-align: center;
+  }
+  .game-meta-val {
+    font-weight: 700;
+    font-size: 1.1rem;
+    display: block;
+    color: var(--accent-game);
+  }
+  .game-meta-key {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .games-grid-small {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-top: none;
+  }
+
+  .game-small-card {
+    background: var(--bg);
+    padding: 2rem;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.3s;
+    overflow: hidden;
+  }
+  .game-small-card:hover { background: #0c0c14; }
+  .game-small-card::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    height: 2px;
+    width: 0;
+    background: var(--accent-game);
+    transition: width 0.3s ease;
+  }
+  .game-small-card:hover::before { width: 100%; }
+
+  .game-small-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.01em;
+  }
+
+  /* ---- SKILLS ---- */
+  #skills { background: var(--bg); }
+
+  .skills-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+  }
+
+  .skill-group { margin-bottom: 2.5rem; }
+
+  .skill-group-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  .skill-chips {
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
+  }
+
+  .chip {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    padding: 0.45rem 1rem;
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    letter-spacing: 0.08em;
+    transition: all 0.2s;
+    cursor: default;
+  }
+  .chip:hover { border-color: var(--muted); color: var(--accent-app); }
+  .chip.game:hover { color: var(--accent-game); }
+
+  .side-info {
+    border: 1px solid var(--border);
+    padding: 2.5rem;
+    background: var(--surface);
+  }
+
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.9rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+  }
+  .info-row:last-child { border-bottom: none; }
+  .info-key {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .info-val { font-weight: 600; font-size: 0.9rem; }
+  .info-val.available { color: #4ade80; }
+
+  /* ---- CONTACT ---- */
+  #contact {
+    background: var(--surface);
+    text-align: center;
+    padding: 8rem 4rem;
+  }
+
+  .contact-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  .contact-heading {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 1.5rem;
+  }
+  .contact-heading .ghost {
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(232,232,240,0.2);
+  }
+
+  .contact-sub {
+    color: var(--muted);
+    font-size: 1rem;
+    max-width: 400px;
+    margin: 0 auto 3rem;
+    line-height: 1.7;
+  }
+
+  .contact-email {
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(0.85rem, 2vw, 1.1rem);
+    color: var(--accent-app);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    display: inline-block;
+    margin-bottom: 3rem;
+    border-bottom: 1px solid rgba(0,229,255,0.3);
+    padding-bottom: 0.3rem;
+    transition: border-color 0.2s;
+  }
+  .contact-email:hover { border-color: var(--accent-app); }
+
+  .socials {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .social-link {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 0.6rem 1.2rem;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+  .social-link:hover { color: var(--text); border-color: var(--muted); }
+
+  /* ---- FOOTER ---- */
+  footer {
+    position: relative; z-index: 1;
+    padding: 1.5rem 4rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-copy {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+
+  /* ---- ANIMATIONS ---- */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ---- RESPONSIVE ---- */
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    section { padding: 5rem 1.5rem; }
+    .hero { padding: 0 1.5rem; }
+    .hero-scroll { display: none; }
+    .games-featured { grid-template-columns: 1fr; }
+    .games-grid-small { grid-template-columns: 1fr 1fr; }
+    .skills-layout { grid-template-columns: 1fr; }
+    footer { padding: 1.5rem; flex-direction: column; gap: 0.5rem; text-align: center; }
+    .stats-bar { flex-wrap: wrap; }
+    .stat-item { min-width: 50%; }
+  }
+  @media (max-width: 600px) {
+    .games-grid-small { grid-template-columns: 1fr; }
+    .apps-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="grid-bg"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">dev<span>.</span>folio</a>
+  <ul class="nav-links">
+    <li><a href="#apps">Apps</a></li>
+    <li><a href="#games">Games</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-circle c1"></div>
+  <div class="hero-bg-circle c2"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Available for work</div>
+    <h1 class="hero-name">
+      Your<br>
+      <span class="line2">Name</span>
+    </h1>
+    <p class="hero-role">
+      App Developer<span class="sep">/</span>Game Developer<span class="sep">/</span>Creative Coder
+    </p>
+    <p class="hero-desc">
+      Building polished software experiences — from production-grade web &amp; mobile apps to immersive game worlds. I write code that ships.
+    </p>
+    <div class="hero-ctas">
+      <a href="#apps" class="btn btn-primary">See My Work ↓</a>
+      <a href="#contact" class="btn btn-outline">Get in Touch</a>
+    </div>
+  </div>
+  <div class="hero-scroll">Scroll</div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat-item fade-up">
+    <span class="stat-num blue">12+</span>
+    <span class="stat-label">Apps Shipped</span>
+  </div>
+  <div class="stat-item fade-up" style="transition-delay:0.1s">
+    <span class="stat-num red">8</span>
+    <span class="stat-label">Games Released</span>
+  </div>
+  <div class="stat-item fade-up" style="transition-delay:0.2s">
+    <span class="stat-num gold">5</span>
+    <span class="stat-label">Years Coding</span>
+  </div>
+  <div class="stat-item fade-up" style="transition-delay:0.3s">
+    <span class="stat-num blue">∞</span>
+    <span class="stat-label">Lines of Code</span>
+  </div>
+</div>
+
+<!-- APP PROJECTS -->
+<section id="apps">
+  <div class="section-header fade-up">
+    <span class="section-label">01</span>
+    <h2 class="section-title">App Projects</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="apps-grid">
+    <!-- Card 1 -->
+    <div class="app-card fade-up">
+      <span class="app-card-status status-live">● Live</span>
+      <span class="app-card-icon">⚡</span>
+      <h3 class="app-card-title">Project Name</h3>
+      <p class="app-card-desc">A brief description of what this app does. Replace with your real project — what problem does it solve? Who uses it?</p>
+      <div class="tag-row">
+        <span class="tag accent">React</span>
+        <span class="tag">Node.js</span>
+        <span class="tag">PostgreSQL</span>
+      </div>
+      <div class="card-links">
+        <a href="#" class="card-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Live Demo
+        </a>
+        <a href="#" class="card-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="app-card fade-up" style="transition-delay:0.1s">
+      <span class="app-card-status status-live">● Live</span>
+      <span class="app-card-icon">🛰️</span>
+      <h3 class="app-card-title">Project Name</h3>
+      <p class="app-card-desc">Describe what makes this app unique. Focus on technical depth or user impact. A couple of sentences is plenty.</p>
+      <div class="tag-row">
+        <span class="tag accent">Vue.js</span>
+        <span class="tag">Firebase</span>
+        <span class="tag">TypeScript</span>
+      </div>
+      <div class="card-links">
+        <a href="#" class="card-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Live Demo
+        </a>
+        <a href="#" class="card-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="app-card fade-up" style="transition-delay:0.2s">
+      <span class="app-card-status status-wip">◑ WIP</span>
+      <span class="app-card-icon">🔬</span>
+      <h3 class="app-card-title">Project Name</h3>
+      <p class="app-card-desc">Currently in development. Describe the concept, what you're experimenting with, or what problem you're trying to solve.</p>
+      <div class="tag-row">
+        <span class="tag accent">Next.js</span>
+        <span class="tag">Supabase</span>
+        <span class="tag">Tailwind</span>
+      </div>
+      <div class="card-links">
+        <a href="#" class="card-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="app-card fade-up" style="transition-delay:0.3s">
+      <span class="app-card-status status-live">● Live</span>
+      <span class="app-card-icon">📡</span>
+      <h3 class="app-card-title">Project Name</h3>
+      <p class="app-card-desc">Another stellar project. What architecture decisions did you make? What did you learn building it?</p>
+      <div class="tag-row">
+        <span class="tag accent">React Native</span>
+        <span class="tag">Expo</span>
+        <span class="tag">Redux</span>
+      </div>
+      <div class="card-links">
+        <a href="#" class="card-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          App Store
+        </a>
+        <a href="#" class="card-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GAME PROJECTS -->
+<section id="games">
+  <div class="section-header fade-up">
+    <span class="section-label">02</span>
+    <h2 class="section-title">Game Projects</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <!-- Featured Games -->
+  <div class="games-featured fade-up">
+    <div class="game-featured-card">
+      <div class="game-genre-badge">Action / Roguelite</div>
+      <h3 class="game-card-title">Your <span class="highlight">Game</span><br>Title Here</h3>
+      <p class="game-card-desc">Your flagship game project. Describe the gameplay loop, the technical challenges you tackled — shaders, procedural generation, AI, physics. What makes it worth playing?</p>
+      <div class="tag-row">
+        <span class="tag" style="color:var(--accent-game);border:1px solid rgba(255,61,113,0.2)">Unity</span>
+        <span class="tag">C#</span>
+        <span class="tag">2D Platformer</span>
+        <span class="tag">Procedural</span>
+      </div>
+      <div class="card-links">
+        <a href="#" class="card-link" style="color:var(--accent-game)">▶ Play on Itch.io</a>
+        <a href="#" class="card-link">GitHub</a>
+      </div>
+      <div class="game-meta">
+        <div class="game-meta-item">
+          <span class="game-meta-val">2,400+</span>
+          <span class="game-meta-key">Downloads</span>
+        </div>
+        <div class="game-meta-item">
+          <span class="game-meta-val">4.7★</span>
+          <span class="game-meta-key">Rating</span>
+        </div>
+        <div class="game-meta-item">
+          <span class="game-meta-val">6mo</span>
+          <span class="game-meta-key">Dev Time</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="game-featured-card">
+      <div class="game-genre-badge">Puzzle / Strategy</div>
+      <h3 class="game-card-title">Second Big<br><span class="highlight">Title</span></h3>
+      <p class="game-card-desc">Another highlight. What engine, what mechanic, what design philosophy? Why does this one stand out in your portfolio?</p>
+      <div class="tag-row">
+        <span class="tag" style="color:var(--accent-game);border:1px solid rgba(255,61,113,0.2)">Godot</span>
+        <span class="tag">GDScript</span>
+        <span class="tag">Top-down</span>
+      </div>
+      <div class="card-links">
+        <a href="#" class="card-link" style="color:var(--accent-game)">▶ Play on Itch.io</a>
+        <a href="#" class="card-link">GitHub</a>
+      </div>
+      <div class="game-meta">
+        <div class="game-meta-item">
+          <span class="game-meta-val">900+</span>
+          <span class="game-meta-key">Downloads</span>
+        </div>
+        <div class="game-meta-item">
+          <span class="game-meta-val">4.4★</span>
+          <span class="game-meta-key">Rating</span>
+        </div>
+        <div class="game-meta-item">
+          <span class="game-meta-val">Jam</span>
+          <span class="game-meta-key">Origin</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Small game cards -->
+  <div class="games-grid-small fade-up">
+    <div class="game-small-card">
+      <div class="game-genre-badge" style="font-size:0.55rem;margin-bottom:0.7rem">Jam Entry</div>
+      <h4 class="game-small-title">Game Jam Title</h4>
+      <p class="app-card-desc">48-hour jam game. Brief concept description.</p>
+      <div class="tag-row" style="margin-top:0.8rem">
+        <span class="tag">Unity</span><span class="tag">48h</span>
+      </div>
+    </div>
+    <div class="game-small-card">
+      <div class="game-genre-badge" style="font-size:0.55rem;margin-bottom:0.7rem">Prototype</div>
+      <h4 class="game-small-title">Prototype Name</h4>
+      <p class="app-card-desc">An experimental mechanic or tech prototype you built.</p>
+      <div class="tag-row" style="margin-top:0.8rem">
+        <span class="tag">Godot</span><span class="tag">Shader</span>
+      </div>
+    </div>
+    <div class="game-small-card">
+      <div class="game-genre-badge" style="font-size:0.55rem;margin-bottom:0.7rem">Mobile</div>
+      <h4 class="game-small-title">Mobile Game</h4>
+      <p class="app-card-desc">A casual mobile title or arcade game you released.</p>
+      <div class="tag-row" style="margin-top:0.8rem">
+        <span class="tag">Unity</span><span class="tag">iOS/Android</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-header fade-up">
+    <span class="section-label">03</span>
+    <h2 class="section-title">Skills & Stack</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="skills-layout">
+    <div>
+      <div class="skill-group fade-up">
+        <div class="skill-group-label">// App Development</div>
+        <div class="skill-chips">
+          <span class="chip">React</span>
+          <span class="chip">Next.js</span>
+          <span class="chip">Vue.js</span>
+          <span class="chip">TypeScript</span>
+          <span class="chip">Node.js</span>
+          <span class="chip">React Native</span>
+          <span class="chip">REST / GraphQL</span>
+          <span class="chip">PostgreSQL</span>
+          <span class="chip">Firebase</span>
+          <span class="chip">Docker</span>
+        </div>
+      </div>
+
+      <div class="skill-group fade-up" style="transition-delay:0.1s">
+        <div class="skill-group-label">// Game Development</div>
+        <div class="skill-chips">
+          <span class="chip game">Unity</span>
+          <span class="chip game">Godot</span>
+          <span class="chip game">C#</span>
+          <span class="chip game">GDScript</span>
+          <span class="chip game">HLSL / Shaders</span>
+          <span class="chip game">Procedural Gen</span>
+          <span class="chip game">Physics Systems</span>
+          <span class="chip game">Aseprite</span>
+        </div>
+      </div>
+
+      <div class="skill-group fade-up" style="transition-delay:0.2s">
+        <div class="skill-group-label">// Tooling</div>
+        <div class="skill-chips">
+          <span class="chip">Git</span>
+          <span class="chip">Linux</span>
+          <span class="chip">VS Code</span>
+          <span class="chip">Figma</span>
+          <span class="chip">CI/CD</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="fade-up" style="transition-delay:0.2s">
+      <div class="side-info">
+        <div class="info-row">
+          <span class="info-key">Location</span>
+          <span class="info-val">Your City, Country</span>
+        </div>
+        <div class="info-row">
+          <span class="info-key">Status</span>
+          <span class="info-val available">● Open to work</span>
+        </div>
+        <div class="info-row">
+          <span class="info-key">Focus</span>
+          <span class="info-val">Full-Stack / Indie Game Dev</span>
+        </div>
+        <div class="info-row">
+          <span class="info-key">Preferred</span>
+          <span class="info-val">Remote / Hybrid</span>
+        </div>
+        <div class="info-row">
+          <span class="info-key">Education</span>
+          <span class="info-val">Your Degree / Self-taught</span>
+        </div>
+        <div class="info-row">
+          <span class="info-key">Languages</span>
+          <span class="info-val">English · Spanish</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-eyebrow fade-up">04 — Let's build something</div>
+  <h2 class="contact-heading fade-up">
+    Say<br><span class="ghost">Hello.</span>
+  </h2>
+  <p class="contact-sub fade-up">Whether it's a project collab, job opportunity, or just a chat about games and code — my inbox is open.</p>
+  <a href="mailto:you@example.com" class="contact-email fade-up">you@example.com</a>
+  <div class="socials fade-up">
+    <a href="#" class="social-link">GitHub</a>
+    <a href="#" class="social-link">LinkedIn</a>
+    <a href="#" class="social-link">Twitter / X</a>
+    <a href="#" class="social-link">Itch.io</a>
+    <a href="#" class="social-link">Download CV</a>
+  </div>
+</section>
+
+<footer>
+  <span class="footer-copy">© 2026 Your Name — Built with ♥ and too much caffeine</span>
+  <span class="footer-copy" style="color:var(--accent-app)">dev.folio</span>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring   = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cursor.style.left = mx+'px'; cursor.style.top = my+'px'; });
+  function animRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx+'px'; ring.style.top = ry+'px';
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+
+  // Change cursor color in game section
+  document.getElementById('games').addEventListener('mouseenter', () => {
+    cursor.style.background = 'var(--accent-game)';
+    ring.style.borderColor = 'var(--accent-game)';
+  });
+  document.getElementById('games').addEventListener('mouseleave', () => {
+    cursor.style.background = 'var(--accent-app)';
+    ring.style.borderColor = 'var(--accent-app)';
+  });
+
+  // Scroll reveal
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
